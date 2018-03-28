@@ -45,7 +45,6 @@ public class KafkaEmbeddedUsage {
         new DirectFieldAccessor(this.topic1).setPropertyValue("numPartitions", 2);
         new DirectFieldAccessor(this.topic2).setPropertyValue("numPartitions", 3);
         this.admin.initialize();
-
         topics = adminClient.describeTopics(Arrays.asList("foo", "bar"));
         Map<String, TopicDescription> results = topics.all().get();
         results.forEach((name, td) -> assertThat(td.partitions().size()).isEqualTo(name.equals("foo") ? 2 : 3));
@@ -65,6 +64,7 @@ public class KafkaEmbeddedUsage {
             Map<String, Object> configs = new HashMap<>();
             configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG,
                 StringUtils.arrayToCommaDelimitedString(kafkaEmbedded().getBrokerAddresses()));
+            configs.put(AdminClientConfig.SECURITY_PROTOCOL_CONFIG, "PLAINTEXT");
             return new KafkaAdmin(configs);
         }
 
